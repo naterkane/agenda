@@ -4,7 +4,7 @@ test:
 	NODE_ENV=test $(MOCHA_PATH) -w --reporter spec
 
 test-debug:
-	NODE_ENV=test $(MOCHA_PATH) -w --reporter spec debug
+	NODE_ENV=test node-inspector & $(MOCHA_PATH) ./test/agenda.js -w --reporter spec --debug-brk
 
 test-once:
 	NODE_ENV=test $(MOCHA_PATH) --reporter spec --timeout 8000

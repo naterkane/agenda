@@ -1,6 +1,11 @@
 /* globals before, describe, it, beforeEach, after, afterEach */
+
+    //require('env-deploy')(__dirname);
+
 var mongoHost = process.env.MONGODB_HOST || 'localhost',
     mongoPort = process.env.MONGODB_PORT || '27017',
+    mongoUser = ("" !== process.env.MONGODB_USER)? process.env.MONGODB_USER + ":" + process.env.MONGODB_PASS + "@" : "",
+
     mongoCfg = 'mongodb://' + mongoHost + ':' + mongoPort + '/agenda-test';
 
 var expect = require('expect.js'),
@@ -73,6 +78,7 @@ describe("agenda", function() {
   describe('Agenda', function() {
     it('sets a default processEvery', function() {
       expect(jobs._processEvery).to.be(5000);
+
     });
 
     describe('configuration methods', function() {
