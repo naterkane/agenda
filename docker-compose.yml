@@ -1,7 +1,7 @@
 # Run tests in Docker `docker-compose up` on Node.js v4
 # - install node deps first `docker-compose run agenda npm install`
 agenda:
-  image: nodesource/jessie:4
+  image: nodesource/centos7:latest
   command: npm test
   volumes:
     - ./:/usr/src/app
@@ -9,6 +9,7 @@ agenda:
     - MONGODB_HOST=mongodb
   links:
     - mongodb
+    #- elasticsearch
 
 mongodb:
   image: mongo:latest
@@ -16,3 +17,14 @@ mongodb:
     - "27017"
   command:
     - --storageEngine=wiredTiger
+
+
+#elasticsearch:
+#  image: elasticsearch:2.2.1
+#  command: elasticsearch -Des.network.host=0.0.0.0 -Des.cluster.name=od-fts1
+#  ports:
+#    - "9200:9200"
+#    - "9300:9300"
+#  volumes:
+#    - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#    - ./elasticsearch/storage:/usr/share/elasticsearch/data
