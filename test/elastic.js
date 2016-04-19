@@ -22,7 +22,7 @@ var mongo = null;
 var jobs = null;
 
 function clearJobs(done) {
-  mongo.collection('agendajobs').remove({}, done);
+  mongo.collection('agendaJobs').remove({}, done);
 }
 
 // Slow timeouts for travis
@@ -285,7 +285,7 @@ describe("agenda", function() {
               setTimeout(function() { // Avoid timing condition where nextRunAt coincidentally is the same
                 jobs.create('unique job', {type: 'active', userId: '123', 'other': false}).unique({'data.type': 'active', 'data.userId': '123'}).schedule("now").save(function(err, job2) {
                   expect(job1.attrs.nextRunAt.toISOString()).not.to.equal(job2.attrs.nextRunAt.toISOString())
-                  mongo.collection('agendajobs').find({name: 'unique job'}).toArray(function(err, j) {
+                  mongo.collection('agendaJobs').find({name: 'unique job'}).toArray(function(err, j) {
                     expect(j).to.have.length(1);
                     done();
                   });
@@ -298,7 +298,7 @@ describe("agenda", function() {
             jobs.create('unique job', {type: 'active', userId: '123', 'other': true}).unique({'data.type': 'active', 'data.userId': '123'}, { insertOnly: true }).schedule("now").save(function(err, job1) {
               jobs.create('unique job', {type: 'active', userId: '123', 'other': false}).unique({'data.type': 'active', 'data.userId': '123'}, {insertOnly: true}).schedule("now").save(function(err, job2) {
                 expect(job1.attrs.nextRunAt.toISOString()).to.equal(job2.attrs.nextRunAt.toISOString())
-                mongo.collection('agendajobs').find({name: 'unique job'}).toArray(function(err, j) {
+                mongo.collection('agendaJobs').find({name: 'unique job'}).toArray(function(err, j) {
                   expect(j).to.have.length(1);
                   done();
                 });
@@ -315,7 +315,7 @@ describe("agenda", function() {
 
             jobs.create('unique job', {type: 'active', userId: '123', 'other': true}).unique({'data.type': 'active', 'data.userId': '123', nextRunAt: time}).schedule(time).save(function(err, job) {
              jobs.create('unique job', {type: 'active', userId: '123', 'other': false}).unique({'data.type': 'active', 'data.userId': '123', nextRunAt: time2}).schedule(time).save(function(err, job) {
-                mongo.collection('agendajobs').find({name: 'unique job'}).toArray(function(err, j) {
+                mongo.collection('agendaJobs').find({name: 'unique job'}).toArray(function(err, j) {
                   expect(j).to.have.length(2);
                   done();
                 });
@@ -655,7 +655,7 @@ describe("agenda", function() {
           if(err) return done(err);
           job.remove(function(err) {
             if(err) return done(err);
-            mongo.collection('agendajobs').find({_id: job.attrs._id}).toArray(function(err, j) {
+            mongo.collection('agendaJobs').find({_id: job.attrs._id}).toArray(function(err, j) {
               expect(j).to.have.length(0);
               done();
             });
