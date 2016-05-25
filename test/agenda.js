@@ -1,6 +1,6 @@
 /* globals before, describe, it, beforeEach, after, afterEach */
 
-    //require('env-deploy')(__dirname);
+    // require('env-deploy')(__dirname);
 
 var mongoHost = process.env.MONGODB_HOST || 'localhost',
     mongoPort = process.env.MONGODB_PORT || '27017',
@@ -67,7 +67,7 @@ describe("agenda", function() {
   afterEach(function(done) {
       setTimeout(function() {
         clearJobs(function() {
-          mongo.close(function () {
+          mongo.close(function() {
             jobs.stop();
             jobs._mdb.close(done);
           });
@@ -249,8 +249,8 @@ describe("agenda", function() {
 
           });
         });
-        describe('with array of names specified', function () {
-          it('returns array of jobs', function () {
+        describe('with array of names specified', function() {
+          it('returns array of jobs', function() {
             expect(jobs.every('5 minutes', ['send email', 'some job'])).to.be.an('array');
           });
         });
@@ -266,8 +266,8 @@ describe("agenda", function() {
             expect(jobs.schedule('in 5 minutes', 'send email').attrs.nextRunAt.valueOf()).to.be.greaterThan(fiveish);
           });
         });
-        describe('with array of names specified', function () {
-          it('returns array of jobs', function () {
+        describe('with array of names specified', function() {
+          it('returns array of jobs', function() {
             expect(jobs.schedule('5 minutes', ['send email', 'some job'])).to.be.an('array');
           });
         });
@@ -362,12 +362,12 @@ describe("agenda", function() {
           jobs.stop(function() {
             job.save(function() {
               jobs.jobs({name: 'no definition'}, function(err, j) {
-                if(err) return done(err);
+                if (err) return done(err);
                 expect(j).to.have.length(1);
                 jobs.purge(function(err) {
-                  if(err) return done(err);
+                  if (err) return done(err);
                   jobs.jobs({name: 'no definition'}, function(err, j) {
-                    if(err) return done(err);
+                    if (err) return done(err);
                     expect(j).to.have.length(0);
                     done();
                   });
@@ -393,9 +393,9 @@ describe("agenda", function() {
       beforeEach(function(done) {
         var remaining = 3;
         var checkDone = function(err) {
-          if(err) return done(err);
+          if (err) return done(err);
           remaining--;
-          if(!remaining) {
+          if (!remaining) {
             done();
           }
         };
@@ -406,19 +406,19 @@ describe("agenda", function() {
 
       afterEach(function(done) {
         jobs._collection.remove({name: {$in: ['jobA', 'jobB']}}, function(err) {
-          if(err) return done(err);
+          if (err) return done(err);
           done();
         });
       });
 
       it('should cancel a job', function(done) {
         jobs.jobs({name: 'jobA'}, function(err, j) {
-          if(err) return done(err);
+          if (err) return done(err);
           expect(j).to.have.length(2);
           jobs.cancel({name: 'jobA'}, function(err) {
-            if(err) return done(err);
+            if (err) return done(err);
             jobs.jobs({name: 'jobA'}, function(err, j) {
-              if(err) return done(err);
+              if (err) return done(err);
               expect(j).to.have.length(0);
               done();
             });
@@ -428,12 +428,12 @@ describe("agenda", function() {
 
       it('should cancel multiple jobs', function(done) {
         jobs.jobs({name: {$in: ['jobA', 'jobB']}}, function(err, j) {
-          if(err) return done(err);
+          if (err) return done(err);
           expect(j).to.have.length(3);
           jobs.cancel({name: {$in: ['jobA', 'jobB']}}, function(err) {
-            if(err) return done(err);
+            if (err) return done(err);
             jobs.jobs({name: {$in: ['jobA', 'jobB']}}, function(err, j) {
-              if(err) return done(err);
+              if (err) return done(err);
               expect(j).to.have.length(0);
               done();
             });
@@ -443,15 +443,15 @@ describe("agenda", function() {
 
       it('should cancel jobs only if the data matches', function(done){
         jobs.jobs({name: 'jobA', data: 'someData'}, function(err, j) {
-          if(err) return done(err);
+          if (err) return done(err);
           expect(j).to.have.length(1);
           jobs.cancel({name: 'jobA', data: 'someData'}, function(err) {
-            if(err) return done(err);
+            if (err) return done(err);
             jobs.jobs({name: 'jobA', data: 'someData'}, function(err, j) {
-              if(err) return done(err);
+              if (err) return done(err);
               expect(j).to.have.length(0);
               jobs.jobs({name: 'jobA'}, function(err, j) {
-                if(err) return done(err);
+                if (err) return done(err);
                 expect(j).to.have.length(1);
                 done();
               });
@@ -587,7 +587,7 @@ describe("agenda", function() {
         expect(job.attrs.nextRunAt.valueOf()).to.be(now.valueOf() + 60000);
       });
 
-      it('understands cron intervals with a timezone', function () {
+      it('understands cron intervals with a timezone', function() {
         var date = new Date('2015-01-01T06:01:00-00:00');
         job.attrs.lastRunAt = date;
         job.repeatEvery('0 6 * * *', {
@@ -598,7 +598,7 @@ describe("agenda", function() {
         expect(moment(job.attrs.nextRunAt).toDate().getDate()).to.be(moment(job.attrs.lastRunAt).add(1, 'days').toDate().getDate());
       });
 
-      it('understands cron intervals with a timezone when last run is the same as the interval', function () {
+      it('understands cron intervals with a timezone when last run is the same as the interval', function() {
         var date = new Date('2015-01-01T06:00:00-00:00');
         job.attrs.lastRunAt = date;
         job.repeatEvery('0 6 * * *', {
@@ -609,36 +609,36 @@ describe("agenda", function() {
         expect(moment(job.attrs.nextRunAt).toDate().getDate()).to.be(moment(job.attrs.lastRunAt).add(1, 'days').toDate().getDate());
       });
 
-      describe('when repeat at time is invalid', function () {
-        beforeEach(function () {
+      describe('when repeat at time is invalid', function() {
+        beforeEach(function() {
           try {
             job.attrs.repeatAt = 'foo';
             job.computeNextRunAt();
-          } catch(e) {}
+          } catch (e) {}
         });
 
-        it('sets nextRunAt to undefined', function () {
+        it('sets nextRunAt to undefined', function() {
           expect(job.attrs.nextRunAt).to.be(undefined);
         });
 
-        it('fails the job', function () {
+        it('fails the job', function() {
           expect(job.attrs.failReason).to.equal('failed to calculate repeatAt time due to invalid format');
         });
       });
 
-      describe('when repeat interval is invalid', function () {
-        beforeEach(function () {
+      describe('when repeat interval is invalid', function() {
+        beforeEach(function() {
           try {
             job.attrs.repeatInterval = 'asd';
             job.computeNextRunAt();
-          } catch(e) {}
+          } catch (e) {}
         });
 
-        it('sets nextRunAt to undefined', function () {
+        it('sets nextRunAt to undefined', function() {
           expect(job.attrs.nextRunAt).to.be(undefined);
         });
 
-        it('fails the job', function () {
+        it('fails the job', function() {
           expect(job.attrs.failReason).to.equal('failed to calculate nextRunAt due to invalid repeat interval');
         });
       });
@@ -649,9 +649,9 @@ describe("agenda", function() {
       it('removes the job', function(done) {
         var job = new Job({agenda: jobs, name: 'removed job'});
         job.save(function(err) {
-          if(err) return done(err);
+          if (err) return done(err);
           job.remove(function(err) {
-            if(err) return done(err);
+            if (err) return done(err);
             mongo.collection('agendaJobs').find({_id: job.attrs._id}).toArray(function(err, j) {
               expect(j).to.have.length(0);
               done();
@@ -705,7 +705,7 @@ describe("agenda", function() {
       it('handles errors', function(done) {
         job.attrs.name = 'failBoat';
         jobs.define('failBoat', function(job, cb) {
-          throw(new Error("Zomg fail"));
+          throw (new Error("Zomg fail"));
         });
         job.run(function(err) {
           expect(err).to.be.ok();
@@ -717,7 +717,7 @@ describe("agenda", function() {
         jobs.define('failBoat2', function(job, cb) {
           var Q = require('q');
           Q.delay(100).then(function(){
-            throw(new Error("Zomg fail"));
+            throw (new Error("Zomg fail"));
           }).fail(cb).done();
         });
         job.run(function(err) {
@@ -730,14 +730,14 @@ describe("agenda", function() {
         var flag = false;
         job.attrs.name = 'failBoat3';
         job.save(function(err) {
-          if(err) return done(err);
+          if (err) return done(err);
           jobs.define('failBoat3', function(job, cb) {
             // Explicitly find the job again,
             // so we have a new job object
             jobs.jobs({name: 'failBoat3'}, function(err, j) {
-              if(err) return done(err);
+              if (err) return done(err);
               j[0].remove(function(err) {
-                if(err) return done(err);
+                if (err) return done(err);
                 cb();
               });
             });
@@ -746,7 +746,7 @@ describe("agenda", function() {
           job.run(function(err) {
             // Expect the deleted job to not exist in the database
             jobs.jobs({name: 'failBoat3'}, function(err, j) {
-              if(err) return done(err);
+              if (err) return done(err);
               expect(j).to.have.length(0);
               done();
             });
@@ -760,7 +760,9 @@ describe("agenda", function() {
       it('extends the lock lifetime', function(done) {
         var lockedAt = new Date();
         var job = new Job({agenda: jobs, name: 'some job', lockedAt: lockedAt});
-        job.save = function(cb) { cb(); };
+        job.save = function(cb) {
+          cb();
+        };
         setTimeout(function() {
           job.touch(function() {
             expect(job.attrs.lockedAt).to.be.greaterThan(lockedAt);
@@ -893,7 +895,7 @@ describe("agenda", function() {
 
       it('clears locks on stop', function(done) {
         jobs.define('longRunningJob', function(job, cb) {
-          //Job never finishes
+          // Job never finishes
         });
         jobs.every('10 seconds', 'longRunningJob');
         jobs.processEvery('1 second');
@@ -914,7 +916,7 @@ describe("agenda", function() {
             cb();
           });
           jobs.define('failBoat', function(job, cb) {
-            throw(new Error("Zomg fail"));
+            throw (new Error("Zomg fail"));
           });
         });
 
@@ -1003,7 +1005,7 @@ describe("agenda", function() {
         jobs.define("lock job", {lockLifetime: 50}, function(job, cb){
           startCounter++;
 
-          if(startCounter != 1) {
+          if (startCounter != 1) {
             expect(startCounter).to.be(2);
             jobs.stop(done);
           }
@@ -1053,47 +1055,47 @@ describe("agenda", function() {
         }, 2000);
       });
 
-      it('does not on-the-fly lock more than agenda._lockLimit jobs', function (done) {
+      it('does not on-the-fly lock more than agenda._lockLimit jobs', function(done) {
         jobs.lockLimit(1);
 
-        jobs.define('lock job', function (job, cb) {});
+        jobs.define('lock job', function(job, cb) {});
 
         jobs.start();
 
-        setTimeout(function () {
+        setTimeout(function() {
           jobs.now('lock job', { i: 1 });
           jobs.now('lock job', { i: 2 });
 
-          setTimeout(function () {
+          setTimeout(function() {
             expect(jobs._lockedJobs).to.have.length(1);
             jobs.stop(done);
           }, 500);
         }, 500);
       });
 
-      it('does not on-the-fly lock more than definition.lockLimit jobs', function (done) {
+      it('does not on-the-fly lock more than definition.lockLimit jobs', function(done) {
         jobs.define('lock job', {
           lockLimit: 1
-        }, function (job, cb) {});
+        }, function(job, cb) {});
 
         jobs.start();
 
-        setTimeout(function () {
+        setTimeout(function() {
           jobs.now('lock job', { i: 1 });
           jobs.now('lock job', { i: 2 });
 
-          setTimeout(function () {
+          setTimeout(function() {
             expect(jobs._lockedJobs).to.have.length(1);
             jobs.stop(done);
           }, 500);
         }, 500);
       });
 
-      it('does not lock more than agenda._lockLimit jobs during processing interval', function (done) {
+      it('does not lock more than agenda._lockLimit jobs during processing interval', function(done) {
         jobs.lockLimit(1);
         jobs.processEvery(200);
 
-        jobs.define('lock job', function (job, cb) {});
+        jobs.define('lock job', function(job, cb) {});
 
         jobs.start();
 
@@ -1102,18 +1104,18 @@ describe("agenda", function() {
         jobs.schedule(when, 'lock job', { i: 1 });
         jobs.schedule(when, 'lock job', { i: 2 });
 
-        setTimeout(function () {
+        setTimeout(function() {
           expect(jobs._lockedJobs).to.have.length(1);
           jobs.stop(done);
         }, 500);
       });
 
-      it('does not lock more than definition.lockLimit jobs during processing interval', function (done) {
+      it('does not lock more than definition.lockLimit jobs during processing interval', function(done) {
         jobs.processEvery(200);
 
         jobs.define('lock job', {
           lockLimit: 1
-        }, function (job, cb) {});
+        }, function(job, cb) {});
 
         jobs.start();
 
@@ -1122,7 +1124,7 @@ describe("agenda", function() {
         jobs.schedule(when, 'lock job', { i: 1 });
         jobs.schedule(when, 'lock job', { i: 2 });
 
-        setTimeout(function () {
+        setTimeout(function() {
           expect(jobs._lockedJobs).to.have.length(1);
           jobs.stop(done);
         }, 500);
@@ -1130,9 +1132,9 @@ describe("agenda", function() {
 
     });
 
-    describe('job concurrency', function () {
+    describe('job concurrency', function() {
 
-      it('should not block a job for concurrency of another job', function (done) {
+      it('should not block a job for concurrency of another job', function(done) {
         jobs.processEvery(50);
 
         var processed = [];
@@ -1140,7 +1142,7 @@ describe("agenda", function() {
 
         jobs.define('blocking', {
           concurrency: 1
-        }, function (job, cb) {
+        }, function(job, cb) {
           processed.push(job.attrs.data.i);
           setTimeout(cb, 400);
         });
@@ -1148,20 +1150,20 @@ describe("agenda", function() {
         jobs.define('non-blocking', {
           // Lower priority to keep it at the back in the queue
           priority: 'lowest'
-        }, function (job) {
+        }, function(job) {
           processed.push(job.attrs.data.i);
           expect(processed).not.to.contain(2);
         });
 
         var finished = false;
-        jobs.on('complete', function (job) {
-          if(!finished && processed.length === 3) {
+        jobs.on('complete', function(job) {
+          if (!finished && processed.length === 3) {
             finished = true;
             done();
           }
         });
 
-        jobs.on('fail', function (err, job) {
+        jobs.on('fail', function(err, job) {
           expect(err).to.be(undefined);
         })
 
@@ -1169,7 +1171,7 @@ describe("agenda", function() {
 
         jobs.schedule(new Date(now + 100), 'blocking', { i: 1 });
 
-        setTimeout(function () {
+        setTimeout(function() {
           jobs.schedule(new Date(now + 100), 'blocking', { i: 2 });
           jobs.schedule(new Date(now + 100), 'non-blocking', { i: 3 });
         }, 100);
@@ -1189,7 +1191,7 @@ describe("agenda", function() {
         var counter = 0;
 
         jobs.define('everyRunTest1', function(job, cb) {
-          if(counter < 2) {
+          if (counter < 2) {
             counter++;
           }
           cb();
@@ -1211,7 +1213,7 @@ describe("agenda", function() {
         var counter = 0;
 
         jobs.define('everyRunTest2', function(job, cb) {
-          if(counter < 2) {
+          if (counter < 2) {
             counter++;
           }
           cb();
@@ -1234,21 +1236,14 @@ describe("agenda", function() {
       describe('.every()', function() {
 
         it('Should not rerun completed jobs after restart', function(done) {
-          var i = 0;
+          var i = 0,
+              receiveMessage,
+              startService,
+              serviceError = function(e) {
+                done(e);
+              };
 
-          var serviceError = function(e) { done(e); };
-          var receiveMessage = function(msg) {
-            if( msg == "ran" ) {
-              expect(i).to.be(0);
-              i += 1;
-              startService();
-            } else if( msg == 'notRan' ) {
-              expect(i).to.be(1);
-              done();
-            } else return done( new Error('Unexpected response returned!') );
-          };
-
-          var startService = function() {
+          startService = function() {
             var serverPath = path.join( __dirname, 'fixtures', 'agenda-instance.js' );
             var n = cp.fork( serverPath, [ mongoCfg, 'daily' ] );
 
@@ -1256,34 +1251,46 @@ describe("agenda", function() {
             n.on('error', serviceError);
           };
 
+          receiveMessage = function(msg) {
+            if ( msg == "ran" ) {
+              expect(i).to.be(0);
+              i += 1;
+              startService();
+            } else if ( msg == 'notRan' ) {
+              expect(i).to.be(1);
+              done();
+            } else return done( new Error('Unexpected response returned!') );
+          };
+
           startService();
         });
 
         it('Should properly run jobs when defined via an array', function(done) {
-          var ran1 = false, ran2 = true, doneCalled = false;
-
-          var serviceError = function(e) { done(e); };
+          var ran1 = false,
+              ran2 = true,
+              doneCalled = false;
+          var serverPath = path.join( __dirname, 'fixtures', 'agenda-instance.js' );
+          var n = cp.fork( serverPath, [ mongoCfg, 'daily-array' ] );
+          var serviceError = function(e) {
+            done(e);
+          };
           var receiveMessage = function(msg) {
-            if( msg == "test1-ran" ) {
+            if ( msg == "test1-ran" ) {
               ran1 = true;
-              if( !!ran1 && !!ran2 && !doneCalled) {
+              if ( !!ran1 && !!ran2 && !doneCalled) {
                 doneCalled = true;
                 done();
                 return n.send('exit');
               }
-            } else if( msg == "test2-ran") {
+            } else if ( msg == "test2-ran") {
               ran2 = true;
-              if( !!ran1 && !!ran2 && !doneCalled) {
+              if ( !!ran1 && !!ran2 && !doneCalled) {
                 doneCalled = true;
                 done();
                 return n.send('exit');
               }
             } else return done( new Error('Jobs did not run!') );
           };
-
-
-          var serverPath = path.join( __dirname, 'fixtures', 'agenda-instance.js' );
-          var n = cp.fork( serverPath, [ mongoCfg, 'daily-array' ] );
 
           n.on('message', receiveMessage);
           n.on('error', serviceError);
@@ -1318,19 +1325,23 @@ describe("agenda", function() {
       describe('schedule()', function() {
 
         it('Should not run jobs scheduled in the future', function(done) {
-          var i = 0;
+          var i = 0,
+              receiveMessage,
+              startService;
 
-          var serviceError = function(e) { done(e); };
-          var receiveMessage = function(msg) {
-            if( msg == 'notRan' ) {
-              if( i < 5 ) return done();
+          var serviceError = function(e) {
+            done(e);
+          };
+          receiveMessage = function(msg) {
+            if ( msg == 'notRan' ) {
+              if ( i < 5 ) return done();
 
               i += 1;
               startService();
             } else return done( new Error('Job scheduled in future was ran!') );
           };
 
-          var startService = function() {
+          startService = function() {
             var serverPath = path.join( __dirname, 'fixtures', 'agenda-instance.js' );
             var n = cp.fork( serverPath, [ mongoCfg, 'define-future-job' ] );
 
@@ -1343,9 +1354,11 @@ describe("agenda", function() {
 
         it('Should run past due jobs when process starts', function(done) {
 
-          var serviceError = function(e) { done(e); };
+          var serviceError = function(e) {
+            done(e);
+          };
           var receiveMessage = function(msg) {
-            if( msg == 'ran' ) {
+            if ( msg == 'ran' ) {
               done();
             } else return done( new Error('Past due job did not run!') );
           };
@@ -1363,30 +1376,29 @@ describe("agenda", function() {
 
         it('Should schedule using array of names', function(done) {
           var ran1 = false, ran2 = false, doneCalled = false;
-
-          var serviceError = function(e) { done(e); };
+          var serverPath = path.join( __dirname, 'fixtures', 'agenda-instance.js' );
+          var n = cp.fork( serverPath, [ mongoCfg, 'schedule-array' ] );
+          var serviceError = function(e) {
+            done(e);
+          };
           var receiveMessage = function(msg) {
 
-            if( msg == "test1-ran" ) {
+            if ( msg == "test1-ran" ) {
               ran1 = true;
-              if( !!ran1 && !!ran2 && !doneCalled) {
+              if ( !!ran1 && !!ran2 && !doneCalled) {
                 doneCalled = true;
                 done();
                 return n.send('exit');
               }
-            } else if( msg == "test2-ran") {
+            } else if ( msg == "test2-ran") {
               ran2 = true;
-              if( !!ran1 && !!ran2 && !doneCalled) {
+              if ( !!ran1 && !!ran2 && !doneCalled) {
                 doneCalled = true;
                 done();
                 return n.send('exit');
               }
             } else return done( new Error('Jobs did not run!') );
           };
-
-
-          var serverPath = path.join( __dirname, 'fixtures', 'agenda-instance.js' );
-          var n = cp.fork( serverPath, [ mongoCfg, 'schedule-array' ] );
 
           n.on('message', receiveMessage);
           n.on('error', serviceError);
@@ -1397,9 +1409,11 @@ describe("agenda", function() {
       describe('now()', function() {
 
         it('Should immediately run the job', function(done) {
-          var serviceError = function(e) { done(e); };
+          var serviceError = function(e) {
+            done(e);
+          };
           var receiveMessage = function(msg) {
-            if( msg == 'ran' ) {
+            if ( msg == 'ran' ) {
               return done();
             } else return done( new Error("Job did not immediately run!") );
           };
@@ -1418,24 +1432,24 @@ describe("agenda", function() {
 
   });
 
-  describe('Retry', function () {
+  describe('Retry', function() {
     it('should retry a job', function(done) {
       var shouldFail = true;
-      jobs.define('a job', function (job, done) {
-        if(shouldFail) {
+      jobs.define('a job', function(job, done) {
+        if (shouldFail) {
           shouldFail = false;
           return done(new Error('test failure'));
         }
         done();
       });
 
-      jobs.on('fail:a job', function (err, job) {
+      jobs.on('fail:a job', function(err, job) {
         job
           .schedule('now')
           .save();
       });
 
-      jobs.on('success:a job', function () {
+      jobs.on('success:a job', function() {
         done();
       });
 
