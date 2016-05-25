@@ -129,16 +129,16 @@ agenda.processEvery('3 days, 4 hours and 36 seconds');
 ### database(url, [collectionName])
 
 Specifies the database at the `url` specified. If no collection name is given,
-`agendaJobs` is used.
+`agendajobs` is used.
 
 ```js
-agenda.database('localhost:27017/agenda-test', 'agendaJobs');
+agenda.database('localhost:27017/agenda-test', 'agendajobs');
 ```
 
 You can also specify it during instantiation.
 
 ```js
-var agenda = new Agenda({db: { address: 'localhost:27017/agenda-test', collection: 'agendaJobs' }});
+var agenda = new Agenda({db: { address: 'localhost:27017/agenda-test', collection: 'agendajobs' }});
 ```
 
 Agenda will emit a `ready` event (see [Agenda Events](#agenda-events)) when properly connected to the database and it is safe to start using Agenda.

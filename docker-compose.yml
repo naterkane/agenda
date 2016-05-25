@@ -28,3 +28,14 @@ mongodb:
 #  volumes:
 #    - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 #    - ./elasticsearch/storage:/usr/share/elasticsearch/data
+elasticsearch:
+  build: elasticsearch
+  working_dir: /data
+  command: /elasticsearch/bin/elasticsearch -Des.config=/data/config/elasticsearch.yml
+  volumes:
+    - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    - ./config:/data/config
+    - ./storage:/usr/share/elasticsearch/data
+  ports:
+    - "9200:9200"
+    - "9300:9300"
